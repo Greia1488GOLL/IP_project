@@ -21,7 +21,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Ваш токен от BotFather
-BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+BOT_TOKEN = 8541522268:AAGCXFjkAOq5zQusZC7vUrw-B4uXpB4LIK8
 
 # Популярные акции (только международные)
 POPULAR_STOCKS = {

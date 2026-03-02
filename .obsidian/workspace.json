@@ -11,10 +11,14 @@
             "id": "8b57bc22841f53e2",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Проект/Введение.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Новая вкладка"
+              "title": "Введение"
             }
           }
         ]
@@ -177,5 +181,9 @@
     }
   },
   "active": "8b57bc22841f53e2",
-  "lastOpenFiles": []
+  "lastOpenFiles": [
+    "Проект/Код проекта.md",
+    "Проект/Введение.md",
+    "Проект"
+  ]
 }

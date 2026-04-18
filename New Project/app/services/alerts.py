@@ -65,7 +65,7 @@ class AlertMonitor:
                 alert["telegram_id"],
                 (
                     f"Сработал алерт #{alert['id']}.\n"
-                    f"{alert['symbol']} достиг {current_price:.2f}\n"
+                    f"{alert['symbol']} достиг цены {current_price:.2f}\n"
                     f"Условие: {alert['direction']} {alert['target_price']:.2f}"
                 ),
             )

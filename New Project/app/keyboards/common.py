@@ -5,13 +5,13 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 
-PRICE_BUTTON = "Price"
-TICKERS_BUTTON = "My tickers"
-ADD_TICKER_BUTTON = "Add ticker"
-ALERTS_BUTTON = "My alerts"
-CREATE_ALERT_BUTTON = "Create alert"
-HELP_BUTTON = "Help"
-BACK_BUTTON = "Back"
+PRICE_BUTTON = "Узнать цену"
+TICKERS_BUTTON = "Мои тикеры"
+ADD_TICKER_BUTTON = "Добавить тикер"
+ALERTS_BUTTON = "Мои алерты"
+CREATE_ALERT_BUTTON = "Создать алерт"
+HELP_BUTTON = "Помощь"
+BACK_BUTTON = "Назад"
 
 
 def main_keyboard() -> ReplyKeyboardMarkup:
@@ -31,7 +31,7 @@ def main_keyboard() -> ReplyKeyboardMarkup:
             ],
         ],
         resize_keyboard=True,
-        input_field_placeholder="Choose an action",
+        input_field_placeholder="Выберите действие",
     )
 
 
@@ -39,7 +39,7 @@ def back_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text=BACK_BUTTON)]],
         resize_keyboard=True,
-        input_field_placeholder="Enter value or press Back",
+        input_field_placeholder="Введите значение или нажмите Назад",
     )
 
 
@@ -48,11 +48,11 @@ def price_result_keyboard(symbol: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Add to tickers",
+                    text="Добавить в тикеры",
                     callback_data=f"ticker:add:{symbol}",
                 ),
                 InlineKeyboardButton(
-                    text="Create alert",
+                    text="Создать алерт",
                     callback_data=f"alert:create:{symbol}",
                 ),
             ]
@@ -65,17 +65,17 @@ def ticker_actions_keyboard(symbol: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Show price",
+                    text="Показать цену",
                     callback_data=f"price:show:{symbol}",
                 ),
                 InlineKeyboardButton(
-                    text="Create alert",
+                    text="Создать алерт",
                     callback_data=f"alert:create:{symbol}",
                 ),
             ],
             [
                 InlineKeyboardButton(
-                    text="Remove ticker",
+                    text="Удалить тикер",
                     callback_data=f"ticker:remove:{symbol}",
                 ),
             ],
@@ -88,11 +88,11 @@ def alert_direction_keyboard(symbol: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="When above",
+                    text="Когда выше",
                     callback_data=f"alertdir:{symbol}:above",
                 ),
                 InlineKeyboardButton(
-                    text="When below",
+                    text="Когда ниже",
                     callback_data=f"alertdir:{symbol}:below",
                 ),
             ]
@@ -105,7 +105,7 @@ def alert_remove_keyboard(alert_id: int) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Remove alert",
+                    text="Удалить алерт",
                     callback_data=f"alert:remove:{alert_id}",
                 ),
             ]

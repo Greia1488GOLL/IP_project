@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
+from aiogram.exceptions import TelegramUnauthorizedError
 
 from app.config import get_settings
 from app.database import Database
@@ -51,5 +52,9 @@ async def main() -> None:
 if __name__ == "__main__":
     try:
         asyncio.run(main())
+    except TelegramUnauthorizedError:
+        logging.error(
+            "Telegram rejected the bot token. Update BOT_TOKEN in .env with a valid token from BotFather."
+        )
     except (KeyboardInterrupt, SystemExit):
         logging.info("Bot stopped")

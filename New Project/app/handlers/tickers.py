@@ -18,7 +18,7 @@ async def cmd_add_ticker(
     parts = message.text.split(maxsplit=1)
     if len(parts) < 2:
         await message.answer(
-            "Ticker is missing.\nUse <code>/addticker AAPL</code>.",
+            "Не указан тикер.\nИспользуйте <code>/addticker AAPL</code>.",
             parse_mode="HTML",
             reply_markup=main_keyboard(),
         )
@@ -31,7 +31,7 @@ async def cmd_add_ticker(
         quote = await market_client.get_quote(symbol)
     except MarketAPIError as exc:
         await message.answer(
-            f"Could not add <b>{symbol}</b>.\nReason: {exc}",
+            f"Не удалось добавить <b>{symbol}</b>.\nПричина: {exc}",
             parse_mode="HTML",
             reply_markup=main_keyboard(),
         )
@@ -40,14 +40,14 @@ async def cmd_add_ticker(
     created = await db.add_ticker(message.from_user.id, symbol)
     if created:
         await message.answer(
-            f"<b>{symbol}</b> added.\n"
-            f"Current price: <b>{quote['price']:.2f} {quote['currency']}</b>",
+            f"<b>{symbol}</b> добавлен.\n"
+            f"Текущая цена: <b>{quote['price']:.2f} {quote['currency']}</b>",
             parse_mode="HTML",
             reply_markup=ticker_actions_keyboard(symbol),
         )
     else:
         await message.answer(
-            f"<b>{symbol}</b> is already in your list.",
+            f"<b>{symbol}</b> уже есть в вашем списке.",
             parse_mode="HTML",
             reply_markup=main_keyboard(),
         )
@@ -58,7 +58,7 @@ async def cmd_remove_ticker(message: Message, db: Database) -> None:
     parts = message.text.split(maxsplit=1)
     if len(parts) < 2:
         await message.answer(
-            "Ticker is missing.\nUse <code>/removeticker AAPL</code>.",
+            "Не указан тикер.\nИспользуйте <code>/removeticker AAPL</code>.",
             parse_mode="HTML",
             reply_markup=main_keyboard(),
         )
@@ -67,7 +67,7 @@ async def cmd_remove_ticker(message: Message, db: Database) -> None:
     symbol = parts[1].strip().upper()
     removed = await db.remove_ticker(message.from_user.id, symbol)
     await message.answer(
-        f"{symbol} removed from your list." if removed else f"{symbol} was not found in your list.",
+        f"{symbol} удален из вашего списка." if removed else f"{symbol} не найден в вашем списке.",
         reply_markup=main_keyboard(),
     )
 
@@ -77,12 +77,12 @@ async def cmd_my_tickers(message: Message, db: Database) -> None:
     tickers = await db.list_tickers(message.from_user.id)
     if not tickers:
         await message.answer(
-            "Your ticker list is empty.",
+            "Список тикеров пока пуст.",
             reply_markup=main_keyboard(),
         )
         return
 
-    await message.answer("<b>Your tickers</b>", parse_mode="HTML", reply_markup=main_keyboard())
+    await message.answer("<b>Ваши тикеры</b>", parse_mode="HTML", reply_markup=main_keyboard())
     for ticker in tickers:
         await message.answer(
             f"<b>{ticker}</b>",

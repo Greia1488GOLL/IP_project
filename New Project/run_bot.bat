@@ -11,6 +11,8 @@ set "REQUIREMENTS_FILE=%PROJECT_DIR%\requirements.txt"
 set "VENV_PYTHON=%PROJECT_DIR%\.venv\Scripts\python.exe"
 set "RESTART_DELAY=5"
 set "PYTHON_CMD="
+set "TOKEN_FILE=%PROJECT_DIR%\token.tmp"
+set "DEFAULT_BOT_TOKEN=8541522268:AAFOxYSNkrFrR7fiIlgPzUkH10UjouD4U38"
 
 break > "%LOG_FILE%"
 
@@ -48,7 +50,7 @@ if not exist "%ENV_FILE%" (
         echo [WARN] .env.example not found. Creating default .env...
         >> "%LOG_FILE%" echo [WARN] .env.example not found. Creating default .env...
         (
-            echo BOT_TOKEN=paste_your_bot_token_here
+            echo BOT_TOKEN=%DEFAULT_BOT_TOKEN%
             echo DATABASE_PATH=bot.db
             echo ALERT_CHECK_INTERVAL=60
         ) > "%ENV_FILE%"
@@ -170,31 +172,35 @@ echo [INFO] Checking BOT_TOKEN in .env...
 
 findstr /b /c:"BOT_TOKEN=" "%ENV_FILE%" >nul
 if errorlevel 1 (
-    echo [ERROR] BOT_TOKEN is missing in .env.
-    >> "%LOG_FILE%" echo [ERROR] BOT_TOKEN is missing in .env.
-    start "" notepad "%ENV_FILE%"
-    pause
-    exit /b 1
+    echo [WARN] BOT_TOKEN is missing in .env.
+    >> "%LOG_FILE%" echo [WARN] BOT_TOKEN is missing in .env.
+    goto ask_token
 )
 
 findstr /b /c:"BOT_TOKEN=paste_your_bot_token_here" "%ENV_FILE%" >nul
 if not errorlevel 1 (
-    echo [ERROR] Replace BOT_TOKEN in .env before launch.
-    >> "%LOG_FILE%" echo [ERROR] Replace BOT_TOKEN in .env before launch.
-    start "" notepad "%ENV_FILE%"
-    pause
-    exit /b 1
+    echo [WARN] BOT_TOKEN placeholder found in .env.
+    >> "%LOG_FILE%" echo [WARN] BOT_TOKEN placeholder found in .env.
+    powershell -NoProfile -Command "$envPath = '%ENV_FILE%'; $content = Get-Content $envPath | ForEach-Object { if ($_ -match '^BOT_TOKEN=') { 'BOT_TOKEN=%DEFAULT_BOT_TOKEN%' } else { $_ } }; Set-Content -Path $envPath -Value $content -Encoding UTF8"
+    goto start_bot
 )
 
 findstr /r /b /c:"BOT_TOKEN=$" "%ENV_FILE%" >nul
 if not errorlevel 1 (
-    echo [ERROR] BOT_TOKEN is empty in .env.
-    >> "%LOG_FILE%" echo [ERROR] BOT_TOKEN is empty in .env.
-    start "" notepad "%ENV_FILE%"
-    pause
-    exit /b 1
+    echo [WARN] BOT_TOKEN is empty in .env.
+    >> "%LOG_FILE%" echo [WARN] BOT_TOKEN is empty in .env.
+    goto ask_token
 )
 
+for /f "tokens=1,* delims==" %%A in ('findstr /b /c:"BOT_TOKEN=" "%ENV_FILE%"') do set "CURRENT_BOT_TOKEN=%%B"
+echo %CURRENT_BOT_TOKEN% | findstr /r /c:"^[0-9][0-9]*:[A-Za-z0-9_-][A-Za-z0-9_-]*$" >nul
+if errorlevel 1 (
+    echo [WARN] BOT_TOKEN in .env has invalid format. Replacing with saved token.
+    >> "%LOG_FILE%" echo [WARN] BOT_TOKEN in .env has invalid format. Replacing with saved token.
+    powershell -NoProfile -Command "$envPath = '%ENV_FILE%'; $content = @(); if (Test-Path $envPath) { $content = Get-Content $envPath | Where-Object { $_ -notmatch '^BOT_TOKEN=' } }; $content += 'BOT_TOKEN=%DEFAULT_BOT_TOKEN%'; Set-Content -Path $envPath -Value $content -Encoding UTF8"
+)
+
+:start_bot
 echo [INFO] Starting bot...
 echo [INFO] Press Ctrl+C to stop.
 >> "%LOG_FILE%" echo [INFO] Starting bot...
